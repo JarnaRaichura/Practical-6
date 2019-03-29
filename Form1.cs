@@ -6,14 +6,48 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Data.SqlClient;
+using System.IO;
 
-namespace WindowsFormsApplication3
+namespace StudentForm
 {
     public partial class Form1 : Form
     {
+        string imgPath;
         public Form1()
         {
             InitializeComponent();
+        }
+
+      
+        private void btnsave_Click(object sender, EventArgs e)
+        {
+            string gen = null;
+            string subject = null;
+            if (genMale.Checked == true) {
+                gen = "m";
+            }
+            if (genFemale.Checked == true) {
+                gen = "f";
+            }
+            if (ck1.Checked == true) {
+                subject = subject + " s1";
+            }
+            if (ck2.Checked == true) {
+                subject = subject + " s2";
+            }
+            string source = @"Data Source=Mishil-Patel\SQLExpress;Initial Catalog=DemoDb;Integrated Security=True;Pooling=False";
+            string insert = "insert into tblstudent (fname,lname,gender,subject,imgStudent) values ('" + txtfname.Text + "','" + txtlname.Text + "','" + gen + "','" + subject + "','" + (imgPath == null ? "" : imgPath) + "')";
+            //MessageBox.Show(insert);
+            //string insert = "insert into tblstudent(fname) values ('jhgjh')";
+            SqlConnection conn = new SqlConnection(source);
+            
+            SqlCommand cmd = new SqlCommand(insert,conn);
+            conn.Open();
+            int i = cmd.ExecuteNonQuery();
+            conn.Close();
+            Console.WriteLine("Success....");
+            
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -21,80 +55,17 @@ namespace WindowsFormsApplication3
 
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void btnimg_Click(object sender, EventArgs e)
         {
-            string myname = txtName.Text;
+            openFileDialog1.Filter = "Jpg|*.jpg";
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                imgPath =  openFileDialog1.SafeFileName;
+                pictureBox.Image = Image.FromFile(openFileDialog1.FileName);
+                //MessageBox.Show(imgPath);
+            }
         }
 
-        private void rdoFemale_CheckedChanged(object sender, EventArgs e)
-        {
 
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtGuardianName_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label5_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label7_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged_2(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label9_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void groupBox3_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnSubmit_Click(object sender, EventArgs e)
-        {
-          INSERT INTO tblStudent(Name,Gender,DOB,Email,ContactNumber,GuardianName,GuardianEmail,GuardianContact,RelationWithGuardian,HscMarks,HscBoard,HscYearOfPassing,AcpcMeritRank,SscMarks,SscBoard,SscYearOfPassing) VALUES (txtName,rdoFemale_CheckedChanged,dateTimePicker1,txtEmail,txtContactNumber,txtGuardianName,txtGuardianEmail,txtGuardianContact,txtGuardianRelation,txtHscMarks,txtHscBoard,txtHscYof,txtAcpcMeritRank,txtSscMarks,txtSscBoard,txtHscYof);
-
-        }
     }
 }
